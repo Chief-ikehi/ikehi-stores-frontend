@@ -32,6 +32,18 @@ export default function CartPage() {
     }
   }
 
+    const handleClearCart = async () => {
+      const confirmClear = confirm("Are you sure you want to clear your cart?")
+      if (!confirmClear) return
+
+      try {
+        await API.delete('/cart/clear/')
+        setCart([]) // Reset cart state
+        toast.success('Cart cleared!')
+      } catch {
+        toast.error('Failed to clear cart.')
+      }
+    }
   const getTotal = () =>
     cart.reduce((total, item) => total + parseFloat(item.price) * item.quantity, 0).toFixed(2)
 
@@ -78,13 +90,21 @@ export default function CartPage() {
           ))}
 
           <div className="flex justify-between items-center mt-6">
-            <p className="text-lg font-semibold">Total: ₦{getTotal()}</p>
-            <button
-              onClick={handleCheckout}
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-            >
-              Checkout
-            </button>
+              <p className="text-lg font-semibold">Total: ₦{getTotal()}</p>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleClearCart}
+                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
+                >
+                  Clear Cart
+                </button>
+                <button
+                  onClick={handleCheckout}
+                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+                >
+                  Checkout
+                </button>
+              </div>
           </div>
         </div>
       )}
